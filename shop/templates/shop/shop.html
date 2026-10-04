@@ -1,0 +1,76 @@
+{% extends 'shop/main.html' %}
+{% load static %}
+{% load bootstrap_icons %}
+
+{% block content %}
+	<div class="row">
+		{% for product in products %}
+		<div class="col-lg-4">
+			<img class="thumbnail" src="{{product.imageURL}}">
+			<div class="box-element product">
+				<h6><strong>{{product.name}}</strong></h6>
+
+				<div class="my-2" id="rating-summary-{{product.id}}">
+					{% bs_icon 'star-fill' color='#ffc107' size='1rem' extra_classes='align-middle' %}
+					<strong id="avg-{{product.id}}">{{product.average_rating}}</strong>/5
+					<small class="text-muted">(<span id="count-{{product.id}}">{{product.num_ratings}}</span> ratings)</small>
+				</div>
+
+				{% if request.user.is_authenticated %}
+				<div class="mb-2">
+					<small class="d-block text-muted">Your Rating:</small>
+					<div class="star-rating" data-product="{{product.id}}">
+						{% for star in "12345" %}
+						<button type="button" class="btn btn-sm btn-outline-warning rate-btn p-1 border-0" data-score="{{star}}">
+							{% bs_icon 'star-fill' color='#ffc107' size='1.1rem' %}
+						</button>
+						{% endfor %}
+					</div>
+				</div>
+				{% else %}
+				<small class="text-muted d-block mb-2"><a href="{% url 'login' %}">Log in</a> to rate</small>
+				{% endif %}
+
+				<hr>
+
+				<button data-product="{{product.id}}" data-action="add" class="btn btn-outline-secondary add-btn update-cart">Add to Cart</button>
+				<a class="btn btn-outline-success" href="#">View</a>
+				<h5 style="float: right"><strong>KSH. {{product.price}}</strong></h5>
+
+			</div>
+		</div>
+		{% endfor %}
+	</div>
+
+	<script type="text/javascript">
+		document.querySelectorAll('.rate-btn').forEach(button => {
+			button.addEventListener('click', function(e) {
+				e.preventDefault();
+				const productId = this.closest('.star-rating').dataset.product;
+				const score = this.dataset.score;
+
+				fetch(`/rate_product/${productId}/`, {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+						'X-CSRFToken': csrftoken, 
+					},
+					body: JSON.stringify({'score': score})
+				})
+				.then(response => response.json())
+				.then(data => {
+					if (data.status === 'success') {
+						// updating rating stats without reloading the page
+						document.getElementById(`avg-${productId}`).innerText = data.avg_rating;
+						document.getElementById(`count-${productId}`).innerText = data.num_ratings;
+						alert(`Thanks! You rated ${score} star(s).`);
+					} else {
+						alert('Could not save rating. Please check if you are logged in.');
+					}
+				})
+				.catch(error => console.error('Error:', error));
+			});
+		});
+	</script>
+
+{% endblock content %}

@@ -1,0 +1,38 @@
+{% extends 'shop/main.html' %}
+
+{% block content %}
+<div class="row justify-content-center" style="margin-top: 50px;">
+    <div class="col-md-6">
+        <div class="box-element">
+            <h3 class="text-center mb-4">Create Account</h3>
+
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-info" role="alert">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            <form method="POST" action="">
+                {% csrf_token %}
+                {% for field in form %}
+                    <div class="form-group mb-3">
+                        <label>{{ field.label }}</label>
+                        {{ field }}
+                        {% if field.errors %}
+                            <small class="text-danger">{{ field.errors|striptags }}</small>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+                <button type="submit" class="btn btn-success btn-block mt-3">Register</button>
+            </form>
+
+            <hr>
+            <div class="text-center">
+                <p>Already have an account? <a href="{% url 'login' %}">Login Here</a></p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

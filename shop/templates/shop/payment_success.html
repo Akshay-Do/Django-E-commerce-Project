@@ -1,0 +1,38 @@
+{% extends 'shop/main.html' %}
+{% load bootstrap_icons %}
+
+{% block content %}
+<div class="row justify-content-center" style="margin-top: 50px;">
+    <div class="col-md-8 text-center">
+        <div class="box-element" style="padding: 40px; border-radius: 8px; border-top: 5px solid #198754;">
+
+            <div style="margin-bottom: 20px;">
+                {% bs_icon 'check-circle-fill' size='64px' color='#198754' %}
+            </div>
+            
+            <h1 style="font-weight: 700; color: #212529;">Payment Successful!</h1>
+            <p class="text-muted" style="font-size: 1.1rem; margin-bottom: 30px;">
+                Thank you for your purchase. Your payment was verified, and your order processing has begun.
+            </p>
+
+            <div class="card bg-light border-0" style="margin-bottom: 30px; text-align: left; padding: 20px;">
+                <h5 style="font-weight: 600; color: #495057;">Next Steps</h5>
+                <ul style="padding-left: 20px; color: #6c757d; margin-bottom: 0;">
+                    <li>Continue browsing other products.</li>
+                    <li>You can download a clean PDF copy of your transaction receipt below for your records.</li>
+                </ul>
+            </div>
+
+            <div class="d-grid d-md-flex justify-content-md-center" style="gap: 20px;">
+                <a href="{% url 'download_receipt' order.id %}" class="btn btn-success btn-lg px-4 me-md-2" style="font-weight: 600;">
+                    {% bs_icon 'download' size='25px' color='currentColor' extra_classes='me-2 align-text-top' %}
+                    Download PDF Receipt
+                </a>
+                <a href="{% url 'shop' %}" class="btn btn-outline-secondary btn-lg px-4" style="font-weight: 500;">
+                    Continue Shopping
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
